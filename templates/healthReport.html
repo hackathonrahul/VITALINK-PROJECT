@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Upload Health Report</title>
+    <style>
+        body {
+            background: #f0f4f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(70, 80, 90, 0.12);
+            padding: 36px 32px;
+            width: 400px;
+            text-align: center;
+        }
+        h2 {
+            color: #225983;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+        input[type="file"] {
+            margin-bottom: 18px;
+        }
+        .btn-upload {
+            background: #3096f3;
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            font-size: 16px;
+            border-radius: 9px;
+            padding: 10px 0;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-upload:hover {
+            background: #1e6fcc;
+        }
+        .error-message {
+            color: #e53e3e;
+            margin-top: 10px;
+        }
+        .output-report {
+            background: #f7f8fa;
+            color: #26314a;
+            margin-top: 24px;
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            text-align: left;
+            max-height: 280px;
+            overflow: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Health Report Uploader</h2>
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".pdf,.png,.jpg,.jpeg" required />
+            <button class="btn-upload" type="submit">Upload & Extract</button>
+        </form>
+        {% if error %}
+            <div class="error-message">{{ error }}</div>
+        {% endif %}
+        {% if extracted_text %}
+            <div class="output-report">
+                <b>Extracted Report Text:</b><br>
+                {{ extracted_text }}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
