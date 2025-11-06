@@ -43,9 +43,24 @@ def health_report():
             ext = filename.rsplit('.', 1)[1].lower()
             try:
                 if ext == 'pdf':
+                    texts = []
+                    # Ensure pytesseract points to the tesseract binary if available
+                    tpath = _get_tesseract_path()
+                    if tpath:
+                        pytesseract.pytesseract.tesseract_cmd = tpath
                     with pdfplumber.open(path) as pdf:
-                        pages = [page.extract_text() or "" for page in pdf.pages]
-                    extracted_text = "\n".join(pages)
+                        for page in pdf.pages:
+                            page_text = page.extract_text() or ""
+                            if not page_text:
+                                try:
+                                    imgobj = page.to_image(resolution=300)
+                                    pil_img = imgobj.original
+                                    ocr = pytesseract.image_to_string(pil_img)
+                                    page_text = ocr or ""
+                                except Exception:
+                                    page_text = page_text
+                            texts.append(page_text)
+                    extracted_text = "\n".join(texts)
                 else:
                     tpath = _get_tesseract_path()
                     if not tpath:

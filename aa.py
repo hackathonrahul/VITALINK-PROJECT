@@ -91,16 +91,25 @@ def health_report():
                         extracted_text = "\n".join(pages)
                         # If no text found, fall back to rendering pages as images and OCR them
                         if not extracted_text.strip():
-                            fallback_texts = []
-                            for page in pdf.pages:
-                                try:
-                                    pil_img = page.to_image(resolution=200).original
-                                    text_img = pytesseract.image_to_string(pil_img)
-                                    fallback_texts.append(text_img)
-                                except Exception:
-                                    # if rendering/OCR fails for a page, continue
-                                    fallback_texts.append("")
-                            extracted_text = "\n".join(fallback_texts)
+                                texts = []
+                                # Ensure pytesseract points to the tesseract binary if available
+                                tpath = _get_tesseract_path()
+                                if tpath:
+                                    pytesseract.pytesseract.tesseract_cmd = tpath
+                                for page in pdf.pages:
+                                    page_text = page.extract_text() or ""
+                                    if not page_text:
+                                        # Fallback: render page to an image and OCR it
+                                        try:
+                                            imgobj = page.to_image(resolution=300)
+                                            pil_img = imgobj.original
+                                            ocr = pytesseract.image_to_string(pil_img)
+                                            page_text = ocr or ""
+                                        except Exception:
+                                            # If rendering/OCR fails, keep page_text empty
+                                            page_text = page_text
+                                    texts.append(page_text)
+                                extracted_text = "\n".join(texts)
                 else:
                     # Check that the tesseract binary is available before calling pytesseract
                     tpath = _get_tesseract_path()
