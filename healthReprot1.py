@@ -4,6 +4,8 @@ from werkzeug.utils import secure_filename
 import pdfplumber
 from PIL import Image
 import pytesseract
+import shutil
+import os
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -13,6 +15,20 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'pdf'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def _get_tesseract_path():
+    """Return the tesseract binary path if available.
+
+    Priority:
+    - Environment variable TESSERACT_CMD if set and executable
+    - which('tesseract') on PATH
+    Returns None if not found.
+    """
+    env = os.environ.get('TESSERACT_CMD')
+    if env and os.path.isfile(env) and os.access(env, os.X_OK):
+        return env
+    return shutil.which('tesseract')
 
 @app.route('/health_report', methods=['GET', 'POST'])
 def health_report():
@@ -31,8 +47,14 @@ def health_report():
                         pages = [page.extract_text() or "" for page in pdf.pages]
                     extracted_text = "\n".join(pages)
                 else:
-                    img = Image.open(path)
-                    extracted_text = pytesseract.image_to_string(img)
+                    tpath = _get_tesseract_path()
+                    if not tpath:
+                        error = ("Tesseract is not installed or it's not in your PATH. "
+                                 "Install tesseract-ocr (see README) or set TESSERACT_CMD env var.")
+                    else:
+                        pytesseract.pytesseract.tesseract_cmd = tpath
+                        img = Image.open(path)
+                        extracted_text = pytesseract.image_to_string(img)
             except Exception as e:
                 error = f"Failed to process file: {str(e)}"
         else:
