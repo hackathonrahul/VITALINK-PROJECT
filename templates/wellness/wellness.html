@@ -105,7 +105,7 @@
                 <div class="program-description">
                     Fun cardio workouts that combine dance and fitness for all levels.
                 </div>
-                <a href="#" class="btn-book">Coming Soon</a>
+                <a href="{{ url_for('zumba') }}" class="btn-book">Join Class</a>
             </div>
             
             <div class="program-card">
@@ -114,7 +114,7 @@
                 <div class="program-description">
                     Learn mindfulness techniques for stress reduction and mental wellness.
                 </div>
-                <a href="#" class="btn-book">Coming Soon</a>
+                <a href="{{ url_for('Meditation') }}" class="btn-book">Join Class</a>
             </div>
             
             <div class="program-card">
@@ -123,9 +123,10 @@
                 <div class="program-description">
                     Group fitness classes for strength, cardio, and overall health.
                 </div>
-                <a href="#" class="btn-book">Coming Soon</a>
+                <a href="{{ url_for('Fitness') }}" class="btn-book">Join Class</a>
             </div>
         </div>
+        
         
         <div style="text-align: center;">
             <a href="{{ url_for('dashboard') }}" class="back-link">← Back to Dashboard</a>
