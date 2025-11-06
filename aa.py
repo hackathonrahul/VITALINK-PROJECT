@@ -42,5 +42,13 @@ def appointment():
 def wellnessclasses():
     return render_template('wellnessclasses.html')
 
+@app.route('/yoga', methods=['GET', 'POST'])
+def yoga():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        date = request.form.get('date')
+        return render_template('wellness/yoga.html', name=name, date=date)
+    return render_template('wellness/yoga.html')
+
 if __name__ == '__main__':
     app.run(debug=True) 

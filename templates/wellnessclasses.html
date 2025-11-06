@@ -71,6 +71,15 @@
             font-size: 15px;
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('class').addEventListener('change', function() {
+                if (this.value === 'Yoga') {
+                    window.location.href = "{{ url_for('yoga') }}";
+                }
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="wellness-container">
