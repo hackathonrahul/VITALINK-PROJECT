@@ -16,3 +16,6 @@ Press CTRL+C to quit
 127.0.0.1 - - [06/Nov/2025 10:18:24] "GET /wellnessclasses HTTP/1.1" 200 -
 127.0.0.1 - - [06/Nov/2025 10:18:34] "POST /yoga HTTP/1.1" 200 -
 127.0.0.1 - - [06/Nov/2025 10:18:37] "GET /vitalink HTTP/1.1" 200 -
+127.0.0.1 - - [06/Nov/2025 10:19:07] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Nov/2025 10:19:13] "POST / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Nov/2025 10:20:21] "POST /health_report HTTP/1.1" 200 -
