@@ -71,20 +71,11 @@
             font-size: 15px;
         }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('class').addEventListener('change', function() {
-                if (this.value === 'Yoga') {
-                    window.location.href = "{{ url_for('yoga') }}";
-                }
-            });
-        });
-    </script>
 </head>
 <body>
     <div class="wellness-container">
         <h2>Book a Wellness Class</h2>
-        <form method="post">
+    <form method="post" action="{{ url_for('yoga') }}">
             <label for="name">Your Name</label>
             <input type="text" id="name" name="name" required />
             <label for="class">Select a Class</label>

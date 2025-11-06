@@ -47,9 +47,11 @@ def yoga():
     if request.method == 'POST':
         name = request.form.get('name')
         date = request.form.get('date')
-        selected_class = "Yoga"
+        # read the selected class from the posted form (fallback to Yoga)
+        selected_class = request.form.get('class', 'Yoga')
         return render_template('wellness/yoga.html', name=name, date=date, selected_class=selected_class)
-    return render_template('wellness/yoga.html', selected_class="Yoga")
+    # GET: show the page; default selected_class is Yoga
+    return render_template('wellness/yoga.html', selected_class='Yoga')
 
 if __name__ == '__main__':
     app.run(debug=True) 
