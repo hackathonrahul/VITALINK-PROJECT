@@ -7,6 +7,7 @@ from PIL import Image
 import pytesseract
 import shutil
 import os
+import requests
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -176,6 +177,68 @@ def Fitness():
 @app.route('/wellness')
 def wellness():
     return render_template('wellness/wellness.html')
+
+
+@app.route('/chat', methods=['GET', 'POST'])
+def chat():
+    """Render chat interface and forward queries to Infermedica-like API.
+
+    Uses environment variables INFERMEDICA_APP_ID and INFERMEDICA_APP_KEY. If
+    those are not set, the route will return a helpful error message.
+    """
+    ai_response = None
+    error = None
+    if request.method == 'POST':
+        user_input = request.form.get('user_input')
+        # Read API credentials from environment
+        INFERMEDICA_APP_ID = os.environ.get('INFERMEDICA_APP_ID')
+        INFERMEDICA_APP_KEY = os.environ.get('INFERMEDICA_APP_KEY')
+
+        if not INFERMEDICA_APP_ID or not INFERMEDICA_APP_KEY:
+            error = "Infermedica API credentials not set. Please set INFERMEDICA_APP_ID and INFERMEDICA_APP_KEY in the environment."
+        else:
+            try:
+                # Step 1: parse symptoms
+                url_parse = 'https://api.infermedica.com/v3/parse'
+                headers = {
+                    'App-Id': INFERMEDICA_APP_ID,
+                    'App-Key': INFERMEDICA_APP_KEY,
+                    'Content-Type': 'application/json'
+                }
+                data_parse = {
+                    "text": user_input,
+                    "context": "symptoms"
+                }
+                resp = requests.post(url_parse, headers=headers, json=data_parse, timeout=10)
+                resp.raise_for_status()
+                mentions = resp.json().get('mentions', [])
+                if not mentions:
+                    ai_response = "Sorry, I couldn't identify any health symptoms in your input."
+                else:
+                    evidence = []
+                    for m in mentions:
+                        evidence.append({
+                            'id': m.get('id'),
+                            'choice_id': m.get('choice_id')
+                        })
+                    # Simple diagnosis call (demo): in a real app collect sex/age
+                    url_diag = 'https://api.infermedica.com/v3/diagnosis'
+                    data_diag = {
+                        'sex': os.environ.get('DEMO_SEX', 'male'),
+                        'age': int(os.environ.get('DEMO_AGE', '30')),
+                        'evidence': evidence
+                    }
+                    diag_resp = requests.post(url_diag, headers=headers, json=data_diag, timeout=10)
+                    diag_resp.raise_for_status()
+                    conditions = diag_resp.json().get('conditions', [])
+                    if conditions:
+                        ai_response = "Possible conditions:\n" + "\n".join([f"{c['name']} ({c['probability']*100:.1f}%)" for c in conditions])
+                    else:
+                        ai_response = "Sorry, I could not determine any conditions from your input."
+            except Exception as e:
+                error = str(e)
+
+    return render_template('chatWithAI.html', ai_response=ai_response, error=error)
 
 if __name__ == '__main__':
     app.run(debug=True) 
