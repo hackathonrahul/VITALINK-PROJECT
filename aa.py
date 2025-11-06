@@ -38,6 +38,9 @@ def appointment():
     date = request.args.get('date', '')
     return render_template('book doctor/appointment.html', name=name, date=date)
 
+@app.route('/wellness_classes')
+def wellness_classes():
+    return render_template('wellness_classes.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
