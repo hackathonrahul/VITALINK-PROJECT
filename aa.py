@@ -47,8 +47,9 @@ def yoga():
     if request.method == 'POST':
         name = request.form.get('name')
         date = request.form.get('date')
-        return render_template('wellness/yoga.html', name=name, date=date)
-    return render_template('wellness/yoga.html')
+        selected_class = "Yoga"
+        return render_template('wellness/yoga.html', name=name, date=date, selected_class=selected_class)
+    return render_template('wellness/yoga.html', selected_class="Yoga")
 
 if __name__ == '__main__':
     app.run(debug=True) 

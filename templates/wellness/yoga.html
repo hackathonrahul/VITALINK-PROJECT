@@ -46,7 +46,10 @@
             Thank you, <strong>{{ name }}</strong>!<br>
             Your {{ selected_class }} class for <strong>{{ date }}</strong> is confirmed.
         </div>
-        <a class="dashboard-link" href="{{ url_for('dashboard') }}">← Back to Dashboard</a>
+        <div style="margin-top: 20px;">
+            <a class="dashboard-link" href="{{ url_for('wellnessclasses') }}" style="margin-right: 20px;">← Back to Classes</a>
+            <a class="dashboard-link" href="{{ url_for('dashboard') }}">← Back to Dashboard</a>
+        </div>
     </div>
 </body>
 </html>
