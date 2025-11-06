@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wellness Programs</title>
+    <style>
+        body {
+            background: #f0f4f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #225983;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .program-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .program-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .program-card:hover {
+            transform: translateY(-5px);
+        }
+        .program-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+        .program-title {
+            color: #1e4c8b;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .program-description {
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .back-link {
+            display: inline-block;
+            color: #3096f3;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        .btn-book {
+            background: #3096f3;
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 15px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-book:hover {
+            background: #1e6fcc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Wellness Programs</h1>
+            <p>Choose from our selection of wellness activities to improve your health and wellbeing</p>
+        </div>
+        
+        <div class="program-grid">
+            <div class="program-card">
+                <div class="program-icon">🧘</div>
+                <div class="program-title">Yoga</div>
+                <div class="program-description">
+                    Improve flexibility, strength, and mental clarity with our expert-led yoga sessions.
+                </div>
+                <a href="{{ url_for('yoga') }}" class="btn-book">Join Class</a>
+            </div>
+            
+            <div class="program-card">
+                <div class="program-icon">💃</div>
+                <div class="program-title">Zumba</div>
+                <div class="program-description">
+                    Fun cardio workouts that combine dance and fitness for all levels.
+                </div>
+                <a href="#" class="btn-book">Coming Soon</a>
+            </div>
+            
+            <div class="program-card">
+                <div class="program-icon">🧠</div>
+                <div class="program-title">Meditation</div>
+                <div class="program-description">
+                    Learn mindfulness techniques for stress reduction and mental wellness.
+                </div>
+                <a href="#" class="btn-book">Coming Soon</a>
+            </div>
+            
+            <div class="program-card">
+                <div class="program-icon">🏃</div>
+                <div class="program-title">Fitness</div>
+                <div class="program-description">
+                    Group fitness classes for strength, cardio, and overall health.
+                </div>
+                <a href="#" class="btn-book">Coming Soon</a>
+            </div>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="{{ url_for('dashboard') }}" class="back-link">← Back to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>
