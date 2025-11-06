@@ -7,3 +7,12 @@ Press CTRL+C to quit
  * Restarting with stat
  * Debugger is active!
  * Debugger PIN: 179-635-242
+127.0.0.1 - - [06/Nov/2025 10:17:41] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [06/Nov/2025 10:17:46] "GET /vitalink HTTP/1.1" 200 -
+127.0.0.1 - - [06/Nov/2025 10:17:50] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Nov/2025 10:17:54] "POST / HTTP/1.1" 302 -
+127.0.0.1 - - [06/Nov/2025 10:17:54] "GET /vitalink HTTP/1.1" 200 -
+127.0.0.1 - - [06/Nov/2025 10:18:08] "GET /bookdoctor HTTP/1.1" 200 -
+127.0.0.1 - - [06/Nov/2025 10:18:24] "GET /wellnessclasses HTTP/1.1" 200 -
+127.0.0.1 - - [06/Nov/2025 10:18:34] "POST /yoga HTTP/1.1" 200 -
+127.0.0.1 - - [06/Nov/2025 10:18:37] "GET /vitalink HTTP/1.1" 200 -
