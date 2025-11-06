@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Yoga & Wellness Classes</title>
+    <style>
+        body {
+            background: #f0f4f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .wellness-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(80, 90, 135, 0.12);
+            padding: 36px 32px;
+            width: 370px;
+            text-align: center;
+        }
+        h2 {
+            color: #225983;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+        label {
+            display: block;
+            text-align: left;
+            font-size: 14px;
+            margin-top: 18px;
+            margin-bottom: 7px;
+            color: #2f4159;
+        }
+        input[type="text"], input[type="date"], select {
+            width: 100%;
+            padding: 10px 13px;
+            border-radius: 7px;
+            border: 1.5px solid #cbd5e1;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        .btn-book {
+            background: #3096f3;
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            font-size: 16px;
+            border-radius: 9px;
+            padding: 12px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 18px;
+            transition: background 0.3s;
+        }
+        .btn-book:hover {
+            background: #1e6fcc;
+        }
+        .back-link {
+            margin-top: 20px;
+            color: #3096f3;
+            text-decoration: none;
+            display: block;
+            font-size: 15px;
+        }
+        .success-message {
+            color: #167b41;
+            margin-top: 18px;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wellness-container">
+        <h2>Book a Wellness Class</h2>
+        <form method="post">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" required />
+            <label for="class">Select a Class</label>
+            <select id="class" name="class" required>
+                <option value="" disabled selected>Select class</option>
+                <option value="Yoga">Yoga</option>
+                <option value="Zumba">Zumba</option>
+                <option value="Pilates">Pilates</option>
+                <option value="Aerobics">Aerobics</option>
+                <option value="Meditation">Meditation</option>
+            </select>
+            <label for="date">Class Date</label>
+            <input type="date" id="date" name="date" required />
+            <button class="btn-book" type="submit">Book Class</button>
+            {% if success %}
+                <p class="success-message">{{ success }}</p>
+            {% endif %}
+        </form>
+        <a class="back-link" href="{{ url_for('dashboard') }}">&#8592; Back to Dashboard</a>
+    </div>
+</body>
+</html>
