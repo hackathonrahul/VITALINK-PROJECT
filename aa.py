@@ -140,6 +140,41 @@ def yoga():
     # GET: show the page; default selected_class is Yoga
     return render_template('wellness/yoga.html', selected_class='Yoga')
 
+
+def _generate_simple_reply(user_input: str) -> str:
+    """Very small, local reply generator for demo/chat placeholder.
+
+    This is intentionally simple — replace with a real AI integration
+    or external API when available.
+    """
+    text = (user_input or "").strip()
+    if not text:
+        return "I'm here to help — tell me your symptom or question."
+    l = text.lower()
+    if any(g in l for g in ("hi", "hello", "hey")):
+        return "Hi! Tell me about your symptom and I'll try to help or suggest next steps."
+    if any(k in l for k in ("fever", "cough", "cold", "temperature")):
+        return ("If you're experiencing fever or cough, monitor your temperature, rest, "
+                "stay hydrated, and seek medical advice if symptoms worsen.")
+    if any(k in l for k in ("pain", "ache", "hurt")):
+        return "For pain management, consider rest and OTC analgesics if appropriate — consult a provider for persistent pain."
+    # default echo-like helpful reply
+    return f"You said: {text}. For specific medical guidance, consult a healthcare professional."
+
+
+@app.route('/chat_ai', methods=['POST'])
+def chat_ai():
+    """Handle AI chat form POSTs. Renders a simple `chat.html` showing question + reply.
+
+    This endpoint is intentionally minimal and synchronous. Swap in an async
+    external AI call if needed.
+    """
+    user_input = request.form.get('user_input', '').strip()
+    if not user_input:
+        return redirect(url_for('dashboard'))
+    reply = _generate_simple_reply(user_input)
+    return render_template('chat.html', question=user_input, reply=reply)
+
 @app.route('/zumba', methods=['GET', 'POST'])
 def zumba():
     if request.method == 'POST':
