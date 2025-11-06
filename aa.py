@@ -147,30 +147,30 @@ def zumba():
         # read the selected class from the posted form (fallback to Yoga)
         selected_class = request.form.get('class', 'zumba')
         return render_template('wellness/yoga.html', name=name, date=date, selected_class=selected_class)
-    # GET: show the page; default selected_class is Yoga
+    # GET: show the page; default selected_class is zumba
     return render_template('wellness/yoga.html', selected_class='zumba')
 
-@app.route('/yoga', methods=['GET', 'POST'])
-def yoga():
+@app.route('/Meditation', methods=['GET', 'POST'])
+def Meditation():
     if request.method == 'POST':
         name = request.form.get('name')
         date = request.form.get('date')
         # read the selected class from the posted form (fallback to Yoga)
-        selected_class = request.form.get('class', 'Yoga')
+        selected_class = request.form.get('class', 'Meditation')
         return render_template('wellness/yoga.html', name=name, date=date, selected_class=selected_class)
-    # GET: show the page; default selected_class is Yoga
-    return render_template('wellness/yoga.html', selected_class='Yoga')
+    # GET: show the page; default selected_class is Meditation
+    return render_template('wellness/yoga.html', selected_class='Meditation')
 
-@app.route('/yoga', methods=['GET', 'POST'])
-def yoga():
+@app.route('/Fitness', methods=['GET', 'POST'])
+def Fitness():
     if request.method == 'POST':
         name = request.form.get('name')
         date = request.form.get('date')
         # read the selected class from the posted form (fallback to Yoga)
-        selected_class = request.form.get('class', 'Yoga')
+        selected_class = request.form.get('class', 'Fitness')
         return render_template('wellness/yoga.html', name=name, date=date, selected_class=selected_class)
-    # GET: show the page; default selected_class is Yoga
-    return render_template('wellness/yoga.html', selected_class='Yoga')
+    # GET: show the page; default selected_class is Fitness
+    return render_template('wellness/yoga.html', selected_class='Fitness')
 
     
 @app.route('/wellness')
