@@ -86,8 +86,21 @@ def health_report():
             try:
                 if ext == 'pdf':
                     with pdfplumber.open(path) as pdf:
+                        # Try to extract embedded text first
                         pages = [page.extract_text() or "" for page in pdf.pages]
-                    extracted_text = "\n".join(pages)
+                        extracted_text = "\n".join(pages)
+                        # If no text found, fall back to rendering pages as images and OCR them
+                        if not extracted_text.strip():
+                            fallback_texts = []
+                            for page in pdf.pages:
+                                try:
+                                    pil_img = page.to_image(resolution=200).original
+                                    text_img = pytesseract.image_to_string(pil_img)
+                                    fallback_texts.append(text_img)
+                                except Exception:
+                                    # if rendering/OCR fails for a page, continue
+                                    fallback_texts.append("")
+                            extracted_text = "\n".join(fallback_texts)
                 else:
                     # Check that the tesseract binary is available before calling pytesseract
                     tpath = _get_tesseract_path()
