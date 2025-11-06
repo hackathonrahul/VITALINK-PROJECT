@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chat with Health AI</title>
+    <style>
+        body { background: #f0f4f8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .chat-container { background: #fff; border-radius: 12px; box-shadow: 0 8px 24px rgba(70,90,90,0.12); padding: 36px 32px; width: 420px; text-align: center; }
+        h2 { color: #225983; margin-bottom: 24px; font-weight: 600; }
+        form { margin-bottom: 18px; }
+        input[type="text"] { width: 80%; padding: 10px 14px; border-radius: 7px; border: 1.5px solid #cbd5e1; margin-bottom: 12px; font-size: 14px; }
+        .btn { background: #3096f3; border: none; color: #fff; font-weight: 600; font-size: 14px; border-radius: 7px; padding: 9px 18px; cursor: pointer; }
+        .btn:hover { background: #1e6fcc; }
+        .response { background: #f7f8fa; color: #26314a; padding: 15px; border-radius: 10px; font-size: 15px; margin-top: 12px; white-space: pre-wrap; text-align: left; }
+        .error-message { color: #e53e3e; margin-top: 10px; }
+        .back-link { margin-top: 20px; color: #3096f3; text-decoration: none; display: block; font-size: 15px; }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h2>Chat with Health AI</h2>
+        <form method="post">
+            <input type="text" name="user_input" placeholder="Enter symptoms (e.g., headache, fever)" required />
+            <button class="btn" type="submit">Ask</button>
+        </form>
+        {% if ai_response %}
+            <div class="response">{{ ai_response }}</div>
+        {% endif %}
+        {% if error %}
+            <div class="error-message">{{ error }}</div>
+        {% endif %}
+        <a class="back-link" href="{{ url_for('dashboard') }}">&#8592; Back to Dashboard</a>
+    </div>
+</body>
+</html>
