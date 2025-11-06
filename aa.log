@@ -7,15 +7,3 @@ Press CTRL+C to quit
  * Restarting with stat
  * Debugger is active!
  * Debugger PIN: 179-635-242
-127.0.0.1 - - [06/Nov/2025 09:32:55] "POST /health_report HTTP/1.1" 200 -
-127.0.0.1 - - [06/Nov/2025 09:37:21] "GET /health_report HTTP/1.1" 200 -
-127.0.0.1 - - [06/Nov/2025 09:37:23] "GET /vitalink HTTP/1.1" 200 -
-127.0.0.1 - - [06/Nov/2025 09:37:26] "GET /health_report HTTP/1.1" 200 -
-127.0.0.1 - - [06/Nov/2025 09:37:38] "POST /health_report HTTP/1.1" 200 -
-127.0.0.1 - - [06/Nov/2025 09:37:46] "GET /health_report HTTP/1.1" 200 -
-127.0.0.1 - - [06/Nov/2025 09:38:03] "POST /health_report HTTP/1.1" 200 -
-127.0.0.1 - - [06/Nov/2025 09:38:10] "GET /health_report HTTP/1.1" 200 -
- * Detected change in '/home/codespace/VITALINK-PROJECT/healthReprot1.py', reloading
- * Restarting with stat
- * Debugger is active!
- * Debugger PIN: 179-635-242
