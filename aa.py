@@ -43,4 +43,4 @@ def wellnessclasses():
     return render_template('wellnessclasses.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True) a
