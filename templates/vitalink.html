@@ -167,10 +167,10 @@
                     <div class="menu-title">Book Doctor</div>
                 </div>
             </a>
-            <a href="{{ url_for('wellnessclasses') }}" style="text-decoration:none; color:inherit;">
+            <a href="{{ url_for('wellness') }}" style="text-decoration:none; color:inherit;">
                 <div class="menu-card">
                     <div class="menu-img">🧘</div>
-                    <div class="menu-title">Wellness Classes</div>
+                    <div class="menu-title">Wellness</div>
                 </div>
             </a>
             <a href="{{ url_for('health_report') }}" style="text-decoration:none; color:inherit;">
@@ -193,10 +193,12 @@
             <span>💬</span>
             <div class="nav-label">Chat</div>
         </div>
-        <div class="nav-item">
-            <span>🧘</span>
-            <div class="nav-label">Wellness</div>
-        </div>
+        <a href="{{ url_for('wellness') }}" style="text-decoration:none; color:inherit;">
+            <div class="nav-item">
+                <span>🧘</span>
+                <div class="nav-label">Wellness</div>
+            </div>
+        </a>
         <div class="nav-item">
             <span>👤</span>
             <div class="nav-label">Profile</div>

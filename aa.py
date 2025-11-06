@@ -139,5 +139,9 @@ def yoga():
     # GET: show the page; default selected_class is Yoga
     return render_template('wellness/yoga.html', selected_class='Yoga')
 
+@app.route('/wellness')
+def wellness():
+    return render_template('wellness/wellness.html')
+
 if __name__ == '__main__':
     app.run(debug=True) 
