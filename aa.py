@@ -38,5 +38,6 @@ def appointment():
     date = request.args.get('date', '')
     return render_template('book doctor/appointment.html', name=name, date=date)
 
+
 if __name__ == '__main__':
     app.run(debug=True)
