@@ -10,6 +10,7 @@ import os
 import requests
 
 app = Flask(__name__)
+#added comment
 app.config['UPLOAD_FOLDER'] = 'uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
