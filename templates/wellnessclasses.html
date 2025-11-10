@@ -62,32 +62,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="sidebar">
-                <div class="booking-box">
-                    <h3 style="margin:0 0 8px;color:#225983">Book a Class</h3>
-                    <form method="post" action="{{ url_for('yoga') }}">
-                        <label for="name">Your Name</label>
-                        <input type="text" id="name" name="name" required />
-                        <label for="class">Select a Class</label>
-                        <select id="class" name="class" required>
-                            <option value="" disabled selected>Select class</option>
-                            <option value="Yoga">Yoga</option>
-                            <option value="Zumba">Zumba</option>
-                            <option value="Pilates">Pilates</option>
-                            <option value="Aerobics">Aerobics</option>
-                            <option value="Meditation">Meditation</option>
-                        </select>
-                        <label for="date">Class Date</label>
-                        <input type="date" id="date" name="date" required />
-                        <button class="btn-book" type="submit">Book Class</button>
-                        {% if success %}
-                            <p style="color:#167b41;margin-top:10px">{{ success }}</p>
-                        {% endif %}
-                    </form>
-                    <a class="back-link" href="{{ url_for('dashboard') }}">&#8592; Back to Dashboard</a>
-                </div>
-            </div>
         </div>
     </div>
 </body>
