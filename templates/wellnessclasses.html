@@ -14,7 +14,7 @@
             height: 100vh;
         }
         .wellness-container {
-            background: #ffffffff;
+            background: #c3ecf1ff;
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(80, 90, 135, 0.12);
             padding: 36px 32px;
@@ -93,6 +93,7 @@
             {% if success %}
                 <p class="success-message">{{ success }}</p>
             {% endif %}
+                <p class="failed-message">{{ failed }}</p>
         </form>
         <a class="back-link" href="{{ url_for('dashboard') }}">&#8592; Back to Dashboard</a>
     </div>
