@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Yoga & Wellness Classes</title>
+    <title>Wellness Classes</title>
     <style>
+
         body {
             background: #f0f4f8;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -96,6 +97,66 @@
                 <p class="failed-message">{{ failed }}</p>
         </form>
         <a class="back-link" href="{{ url_for('dashboard') }}">&#8592; Back to Dashboard</a>
+
+        body { background: #f0f4f8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin:0; padding:20px }
+        .container { max-width:1100px; margin:0 auto; }
+        .header { text-align:center; margin-bottom:18px }
+        .header h1{ color:#225983; margin:0 0 6px; font-weight:600 }
+        .layout { display:flex; gap:24px; align-items:flex-start; flex-wrap:wrap }
+        .main { flex:2; min-width:320px }
+        .sidebar { flex:1; min-width:300px }
+        .program-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px }
+        .program-card { background:#fff; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.08); padding:18px; text-align:center }
+        .program-icon { font-size:34px; margin-bottom:10px }
+        .program-title { color:#1e4c8b; font-size:16px; font-weight:600; margin-bottom:8px }
+        .program-description { color:#4a5568; font-size:13px; line-height:1.4 }
+        .btn-small { background:#3096f3; color:#fff; padding:8px 12px; border-radius:8px; text-decoration:none; display:inline-block; margin-top:12px }
+        .booking-box { background:#fff; border-radius:12px; padding:18px; box-shadow:0 8px 24px rgba(80,90,135,0.08) }
+        label{ display:block; font-size:14px; margin-top:10px; color:#2f4159 }
+        input[type=text], input[type=date], select{ width:100%; padding:10px;border-radius:7px;border:1.5px solid #cbd5e1;margin-top:6px }
+        .btn-book{ background:#3096f3;color:#fff;border:none;padding:10px 14px;border-radius:8px;margin-top:12px;cursor:pointer;width:100% }
+        .back-link{ display:block;text-align:center;margin-top:14px;color:#3096f3;text-decoration:none }
+        @media (max-width:800px){ .layout{flex-direction:column} }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Wellness Classes</h1>
+            <p>Explore programs and book a class that fits your schedule.</p>
+        </div>
+
+        <div class="layout">
+            <div class="main">
+                <div class="program-grid">
+                    <div class="program-card">
+                        <div class="program-icon">🧘</div>
+                        <div class="program-title">Yoga</div>
+                        <div class="program-description">Improve flexibility, strength, and mental clarity with our expert-led yoga sessions.</div>
+                        <a class="btn-small" href="{{ url_for('yoga') }}">Join Class</a>
+                    </div>
+                    <div class="program-card">
+                        <div class="program-icon">💃</div>
+                        <div class="program-title">Zumba</div>
+                        <div class="program-description">Fun cardio workouts that combine dance and fitness for all levels.</div>
+                        <a class="btn-small" href="{{ url_for('zumba') }}">Join Class</a>
+                    </div>
+                    <div class="program-card">
+                        <div class="program-icon">🧠</div>
+                        <div class="program-title">Meditation</div>
+                        <div class="program-description">Learn mindfulness techniques for stress reduction and mental wellness.</div>
+                        <a class="btn-small" href="{{ url_for('Meditation') }}">Join Class</a>
+                    </div>
+                    <div class="program-card">
+                        <div class="program-icon">🏃</div>
+                        <div class="program-title">Fitness</div>
+                        <div class="program-description">Group fitness classes for strength, cardio, and overall health.</div>
+                        <a class="btn-small" href="{{ url_for('Fitness') }}">Join Class</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </body>
 </html>
