@@ -71,7 +71,7 @@ def appointment():
 
 @app.route('/wellnessclasses')
 def wellnessclasses():
-    return render_template('wellnessclasses.html')
+    return render_template('/wellnessclasses.html')
 
 
 @app.route('/health_report', methods=['GET', 'POST'])
