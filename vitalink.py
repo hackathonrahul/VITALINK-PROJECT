@@ -315,12 +315,12 @@ def Meditation():
     # GET: show the page; default selected_class is Meditation
     return render_template('wellness/yoga.html', selected_class='Meditation')
 
-@app.route('/Fitness', methods=['GET', 'POST'])
-def Fitness():
+@app.route('/mudra', methods=['GET', 'POST'])
+def mudra():
     if request.method == 'POST':
         name = request.form.get('name')
         date = request.form.get('date')
-        selected_class = request.form.get('class', 'Fitness')
+        selected_class = request.form.get('class', 'mudra')
         
         # Save to appointments.json
         appointment = {
@@ -334,8 +334,8 @@ def Fitness():
         _save_appointment(appointment)
         
         return render_template('wellness/yoga.html', name=name, date=date, selected_class=selected_class)
-    # GET: show the page; default selected_class is Fitness
-    return render_template('wellness/yoga.html', selected_class='Fitness')
+    # GET: show the page; default selected_class is mudra
+    return render_template('wellness/yoga.html', selected_class='mudra')
 
     
 @app.route('/wellness')
