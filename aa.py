@@ -69,6 +69,7 @@ def appointment():
     date = request.args.get('date', '')
     return render_template('book doctor/appointment.html', name=name, date=date)
 
+#added nothing
 @app.route('/wellnessclasses')
 def wellnessclasses():
     return render_template('/wellnessclasses.html')
