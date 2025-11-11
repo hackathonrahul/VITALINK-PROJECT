@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, redirect, url_for
 import os
 from werkzeug.utils import secure_filename
@@ -69,9 +68,10 @@ def appointment():
     date = request.args.get('date', '')
     return render_template('book doctor/appointment.html', name=name, date=date)
 
+#added nothing
 @app.route('/wellnessclasses')
 def wellnessclasses():
-    return render_template('wellnessclasses.html')
+    return render_template('/wellnessclasses.html')
 
 
 @app.route('/health_report', methods=['GET', 'POST'])
