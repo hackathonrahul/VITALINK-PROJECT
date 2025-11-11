@@ -21,6 +21,13 @@
         .appointments-section { background: #FFF; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 17px 0; text-align: center; }
         .appt-title { color: #2979c7; font-weight: 600; font-size: 16px; margin-bottom: 6px; }
         .appt-list { color: #495C6B; font-size: 14px; text-align: left; margin: 0 auto; width: 85%; }
+        .appointment-item { padding: 12px; margin-bottom: 10px; border-left: 4px solid #4CAF50; background: #f9f9f9; border-radius: 4px; }
+        .appointment-item.doctor { border-left-color: #FF6B6B; }
+        .appointment-item.wellness { border-left-color: #4CAF50; }
+        .appointment-item-title { font-weight: 600; color: #333; margin-bottom: 5px; }
+        .appointment-item-detail { color: #666; font-size: 14px; margin-bottom: 4px; }
+        .appointment-item-date { color: #0066CC; font-size: 14px; font-weight: 600; }
+        .appointment-empty { text-align: center; color: #999; padding: 15px; font-size: 14px; }
         .recent-activity { color: #495C6B; font-weight: 600; font-size: 18px; margin-top: 12px; margin-bottom: 2px; }
         .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; display: flex; justify-content: space-around; border-top: 1px solid #EAEAEA; padding: 8px 0 5px 0; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #1E4C8B; font-size: 21px; cursor: pointer; }
@@ -83,19 +90,28 @@
         <div class="appointments-section">
             <div class="appt-title">Your Appointments</div>
             <div class="appt-list">
-
-            </di                    {% if appointments and appointments|length > 0 %}
-                                    {% for appointment in appointments %}
-                                                                <div class="appointment-item" style="padding: 10px; margin-bottom: 10px; border-left: 3px solid #4CAF50; background: #f9f9f9;">
-                                                                                                    <div style="font-weight: 600; color: #333; margin-bottom: 5px;">{{ appointment.doctor_name }}</div>
-                                                                                                                                    <div style="color: #666; font-size: 14px;">📅 {{ appointment.date }} at {{ appointment.time }}</div>
-                                                                                                                                                                    {% if appointment.specialty %}<div style="color: #888; font-size: 13px;">🩺 {{ appointment.specialty }}</div>{% endif %}
-                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                        {% endfor %}
-                                                                                                                                                                                                                                            {% else %}
-                                                                                                                                                                                                                                                                    <div style="text-align: center; color: #999; padding: 20px;">No upcoming appointments.</div>
-                                                                                                                                                                                                                                                                                        {% endif %}
-                                                                </div>v>
+                {% if appointments and appointments|length > 0 %}
+                    {% for appointment in appointments %}
+                        {% if appointment.type == 'doctor' %}
+                            <div class="appointment-item doctor">
+                                <div class="appointment-item-title">👨‍⚕️ Doctor Appointment</div>
+                                <div class="appointment-item-detail">Name: {{ appointment.name }}</div>
+                                <div class="appointment-item-detail">Reason: {{ appointment.reason }}</div>
+                                <div class="appointment-item-date">📅 {{ appointment.date }} ({{ appointment.day }})</div>
+                            </div>
+                        {% elif appointment.type == 'wellness' %}
+                            <div class="appointment-item wellness">
+                                <div class="appointment-item-title">🧘 {{ appointment.class_name }}</div>
+                                <div class="appointment-item-detail">Name: {{ appointment.name }}</div>
+                                <div class="appointment-item-date">📅 {{ appointment.date }} ({{ appointment.day }})</div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="appointment-empty">No upcoming appointments. Book one to get started!</div>
+                {% endif %}
+            </div>
+        </div>
         </div>
         <div class="recent-activity">
             Recent Activity

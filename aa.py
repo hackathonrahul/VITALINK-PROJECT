@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import os
 from werkzeug.utils import secure_filename
 import pdfplumber
@@ -7,16 +7,47 @@ import pytesseract
 import shutil
 import os
 import requests
+import json
+from datetime import datetime
 
 app = Flask(__name__)
 #added comment
 app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['APPOINTMENTS_FILE'] = 'appointments.json'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'pdf'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def _load_appointments():
+    """Load appointments from JSON file."""
+    if os.path.exists(app.config['APPOINTMENTS_FILE']):
+        try:
+            with open(app.config['APPOINTMENTS_FILE'], 'r') as f:
+                return json.load(f)
+        except:
+            return []
+    return []
+
+
+def _save_appointment(appointment):
+    """Save a new appointment to the JSON file."""
+    appointments = _load_appointments()
+    appointments.append(appointment)
+    with open(app.config['APPOINTMENTS_FILE'], 'w') as f:
+        json.dump(appointments, f, indent=2)
+
+
+def _get_day_name(date_str):
+    """Convert date string (YYYY-MM-DD) to day name (e.g., 'Monday')."""
+    try:
+        dt = datetime.strptime(date_str, '%Y-%m-%d')
+        return dt.strftime('%A')
+    except:
+        return ""
 
 
 def _get_tesseract_path():
@@ -47,16 +78,33 @@ def login():
 
 @app.route('/vitalink')
 def dashboard():
-    return render_template('vitalink.html')
+    # Load appointments and pass to template
+    appointments = _load_appointments()
+    # Sort by date
+    appointments.sort(key=lambda x: x.get('date', ''))
+    return render_template('vitalink.html', appointments=appointments)
 
 
 @app.route('/bookdoctor', methods=['GET', 'POST'])
 def bookdoctor():
     if request.method == 'POST':
-        # grab fields and redirect to the appointment confirmation page (Post-Redirect-Get)
+        # grab fields and save appointment
         name = request.form.get('name')
         date = request.form.get('date')
-        # In a real app you'd persist this booking. For now redirect and show confirmation.
+        reason = request.form.get('reason', '')
+        
+        # Save to appointments.json
+        appointment = {
+            'type': 'doctor',
+            'name': name,
+            'date': date,
+            'day': _get_day_name(date),
+            'reason': reason,
+            'timestamp': datetime.now().isoformat()
+        }
+        _save_appointment(appointment)
+        
+        # Redirect to confirmation with params
         return redirect(url_for('appointment', name=name, date=date))
     return render_template('bookdoctor.html')
 
@@ -135,8 +183,19 @@ def yoga():
     if request.method == 'POST':
         name = request.form.get('name')
         date = request.form.get('date')
-        # read the selected class from the posted form (fallback to Yoga)
         selected_class = request.form.get('class', 'Yoga')
+        
+        # Save to appointments.json
+        appointment = {
+            'type': 'wellness',
+            'name': name,
+            'date': date,
+            'day': _get_day_name(date),
+            'class_name': selected_class,
+            'timestamp': datetime.now().isoformat()
+        }
+        _save_appointment(appointment)
+        
         return render_template('wellness/yoga.html', name=name, date=date, selected_class=selected_class)
     # GET: show the page; default selected_class is Yoga
     return render_template('wellness/yoga.html', selected_class='Yoga')
@@ -181,8 +240,19 @@ def zumba():
     if request.method == 'POST':
         name = request.form.get('name')
         date = request.form.get('date')
-        # read the selected class from the posted form (fallback to Yoga)
-        selected_class = request.form.get('class', 'zumba')
+        selected_class = request.form.get('class', 'Zumba')
+        
+        # Save to appointments.json
+        appointment = {
+            'type': 'wellness',
+            'name': name,
+            'date': date,
+            'day': _get_day_name(date),
+            'class_name': selected_class,
+            'timestamp': datetime.now().isoformat()
+        }
+        _save_appointment(appointment)
+        
         return render_template('wellness/yoga.html', name=name, date=date, selected_class=selected_class)
     # GET: show the page; default selected_class is zumba
     return render_template('wellness/yoga.html', selected_class='zumba')
@@ -192,8 +262,19 @@ def Meditation():
     if request.method == 'POST':
         name = request.form.get('name')
         date = request.form.get('date')
-        # read the selected class from the posted form (fallback to Yoga)
         selected_class = request.form.get('class', 'Meditation')
+        
+        # Save to appointments.json
+        appointment = {
+            'type': 'wellness',
+            'name': name,
+            'date': date,
+            'day': _get_day_name(date),
+            'class_name': selected_class,
+            'timestamp': datetime.now().isoformat()
+        }
+        _save_appointment(appointment)
+        
         return render_template('wellness/yoga.html', name=name, date=date, selected_class=selected_class)
     # GET: show the page; default selected_class is Meditation
     return render_template('wellness/yoga.html', selected_class='Meditation')
@@ -203,8 +284,19 @@ def Fitness():
     if request.method == 'POST':
         name = request.form.get('name')
         date = request.form.get('date')
-        # read the selected class from the posted form (fallback to Yoga)
         selected_class = request.form.get('class', 'Fitness')
+        
+        # Save to appointments.json
+        appointment = {
+            'type': 'wellness',
+            'name': name,
+            'date': date,
+            'day': _get_day_name(date),
+            'class_name': selected_class,
+            'timestamp': datetime.now().isoformat()
+        }
+        _save_appointment(appointment)
+        
         return render_template('wellness/yoga.html', name=name, date=date, selected_class=selected_class)
     # GET: show the page; default selected_class is Fitness
     return render_template('wellness/yoga.html', selected_class='Fitness')
