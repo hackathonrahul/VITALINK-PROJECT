@@ -37,9 +37,18 @@
         padding: 20px;
         text-align: center;
         transition: transform 0.2s;
+        cursor: pointer;
       }
       .program-card:hover {
         transform: translateY(-5px);
+      }
+      .program-card:active {
+        animation: pop 0.3s ease-out;
+      }
+      @keyframes pop {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
       }
       .program-icon {
         font-size: 40px;
