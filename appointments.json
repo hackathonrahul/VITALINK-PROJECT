@@ -1,35 +1,10 @@
 [
   {
-    "type": "doctor",
-    "name": "Sravan",
-    "date": "2025-11-14",
-    "day": "Friday",
-    "reason": "fevar",
-    "timestamp": "2025-11-11T09:01:35.120904"
-  },
-  {
-<<<<<<< HEAD
-    "type": "doctor",
-    "name": "Rahul G",
-    "date": "2025-11-12",
-    "day": "Wednesday",
-    "reason": "headace",
-    "timestamp": "2025-11-11T09:08:01.044673"
-  },
-  {
     "type": "wellness",
-    "name": "Rahul G",
-    "date": "2025-11-28",
-    "day": "Friday",
-    "class_name": "Zumba",
-    "timestamp": "2025-11-11T09:09:50.985450"
-=======
-    "type": "wellness",
-    "name": "Sravan",
-    "date": "2025-11-29",
-    "day": "Saturday",
-    "class_name": "Meditation",
-    "timestamp": "2025-11-11T09:06:11.892048"
->>>>>>> ffa5ea86f5179afed90d5d4f2e5ad689b01021ef
+    "name": "Alice",
+    "date": "2025-11-20",
+    "day": "Thursday",
+    "class_name": "Yoga",
+    "timestamp": "2025-11-11T09:28:23.900646"
   }
 ]

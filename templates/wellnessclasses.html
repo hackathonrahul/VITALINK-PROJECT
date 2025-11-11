@@ -192,7 +192,7 @@
                         <div class="program-description">
                             Improve flexibility, strength, and mental clarity with our expert-led yoga sessions.
                         </div>
-                        <a href="{{ url_for('yoga') }}" class="btn-small">Join Class</a>
+                        <a href="{{ url_for('book_wellness', cls='Yoga') }}" class="btn-small">Join Class</a>
                     </div>
 
                     <div class="program-card">
@@ -201,7 +201,7 @@
                         <div class="program-description">
                             Fun cardio workouts that combine dance and fitness for all levels.
                         </div>
-                        <a href="{{ url_for('zumba') }}" class="btn-small">Join Class</a>
+                        <a href="{{ url_for('book_wellness', cls='Zumba') }}" class="btn-small">Join Class</a>
                     </div>
 
                     <div class="program-card">
@@ -210,7 +210,7 @@
                         <div class="program-description">
                             Learn mindfulness techniques for stress reduction and mental wellness.
                         </div>
-                        <a href="{{ url_for('Meditation') }}" class="btn-small">Join Class</a>
+                        <a href="{{ url_for('book_wellness', cls='Meditation') }}" class="btn-small">Join Class</a>
                     </div>
 
                     <div class="program-card">
@@ -219,38 +219,11 @@
                         <div class="program-description">
                             Group fitness classes for strength, cardio, and overall health.
                         </div>
-                        <a href="{{ url_for('Fitness') }}" class="btn-small">Join Class</a>
+                        <a href="{{ url_for('book_wellness', cls='Fitness') }}" class="btn-small">Join Class</a>
                     </div>
                 </div>
             </div>
-
-            <div class="sidebar">
-                <div class="booking-box">
-                    <h3>Book a Class</h3>
-                    <form method="post" action="{{ url_for('yoga') }}">
-                        <label for="name">Your Name</label>
-                        <input type="text" id="name" name="name" required />
-
-                        <label for="class">Select a Class</label>
-                        <select id="class" name="class" required>
-                            <option value="" disabled selected>Select class</option>
-                            <option value="Yoga">Yoga</option>
-                            <option value="Zumba">Zumba</option>
-                            <option value="fitness">fitness</option>
-                            <option value="Meditation">Meditation</option>
-                        </select>
-
-                        <label for="date">Class Date</label>
-                        <input type="date" id="date" name="date" class="booking-date" required />
-
-                        <button class="btn-book" type="submit">Book Class</button>
-                        {% if success %}
-                        <p class="success-message">{{ success }}</p>
-                        {% endif %}
-                    </form>
-                    <a class="back-link" href="{{ url_for('dashboard') }}">← Back to Dashboard</a>
-                </div>
-            </div>
+            <!-- sidebar booking box removed; booking now happens on the dedicated booking page -->
         </div>
                 </div>
             </div>

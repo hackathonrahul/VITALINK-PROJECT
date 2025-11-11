@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Book Wellness Class</title>
+  <style>
+    body { background: #f0f4f8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; }
+    .container { max-width: 520px; margin: 24px auto; }
+    .card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 8px 24px rgba(80,90,135,0.06); }
+    h2 { color: #225983; margin-top: 0; }
+    label { display:block; margin-top:12px; margin-bottom:6px; color:#2f4159; font-weight:500; }
+    input[type="text"], input[type="date"], select { width:100%; padding:10px 12px; border-radius:8px; border:1.5px solid #cbd5e1; box-sizing:border-box }
+    .btn-book { background:#3096f3; color:#fff; border:none; padding:11px 16px; border-radius:8px; margin-top:16px; cursor:pointer; width:100%; font-weight:600 }
+    .small { font-size:13px; color:#666; margin-top:10px }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h2>Book a Class</h2>
+      <form method="post" id="book-wellness-form">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="class">Class</label>
+        <input type="text" id="class" name="class" readonly />
+
+        <label for="date">Class Date</label>
+        <input type="date" id="date" name="date" class="booking-date" required />
+
+        <button class="btn-book" type="submit">Book Class</button>
+      </form>
+      <div class="small"><a href="{{ url_for('wellnessclasses') }}">← Back to Classes</a></div>
+    </div>
+  </div>
+
+  <script>
+    // Set the class name from query param and set min date to today
+    document.addEventListener('DOMContentLoaded', function () {
+      const params = new URLSearchParams(window.location.search);
+      const cls = params.get('cls') || params.get('class') || '';
+      const classInput = document.getElementById('class');
+      if (classInput) classInput.value = cls;
+
+      const today = new Date().toISOString().split('T')[0];
+      document.querySelectorAll('input.booking-date').forEach(function (el) { el.setAttribute('min', today); });
+    });
+  </script>
+</body>
+</html>
