@@ -6,5 +6,21 @@
     "day": "Friday",
     "reason": "fevar",
     "timestamp": "2025-11-11T09:01:35.120904"
+  },
+  {
+    "type": "doctor",
+    "name": "Rahul G",
+    "date": "2025-11-12",
+    "day": "Wednesday",
+    "reason": "headace",
+    "timestamp": "2025-11-11T09:08:01.044673"
+  },
+  {
+    "type": "wellness",
+    "name": "Rahul G",
+    "date": "2025-11-28",
+    "day": "Friday",
+    "class_name": "Zumba",
+    "timestamp": "2025-11-11T09:09:50.985450"
   }
 ]
