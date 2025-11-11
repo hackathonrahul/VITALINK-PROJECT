@@ -79,7 +79,7 @@
             <label for="name">Your Name</label>
             <input type="text" id="name" name="name" required />
             <label for="date">Preferred Date</label>
-            <input type="date" id="date" name="date" required />
+            <input type="date" id="date" name="date" class="booking-date" required />
             <label for="reason">Reason for Appointment</label>
             <input type="text" id="reason" name="reason" placeholder="Describe your symptoms..." required />
             <button class="btn-book" type="submit">Book Appointment</button>
@@ -90,5 +90,18 @@
             <a class="back-link" href="vitalink.html">← Back to Dashboard</a>
         </form>
     </div>
+
+    <script>
+        // Prevent selecting past dates on booking date inputs across templates.
+        document.addEventListener('DOMContentLoaded', function () {
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelectorAll('input.booking-date').forEach(function (el) {
+                try { el.setAttribute('min', today); } catch (e) { /* ignore */ }
+            });
+            document.querySelectorAll('input[type="date"]:not(.booking-date)').forEach(function (el) {
+                try { el.setAttribute('min', today); } catch (e) { /* ignore */ }
+            });
+        });
+    </script>
 </body>
 </html>

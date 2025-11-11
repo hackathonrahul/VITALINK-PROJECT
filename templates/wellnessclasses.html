@@ -236,16 +236,12 @@
                             <option value="" disabled selected>Select class</option>
                             <option value="Yoga">Yoga</option>
                             <option value="Zumba">Zumba</option>
-<<<<<<< HEAD
-                            <option value="Aerobics">Aerobics</option>
-=======
-                            <option value="Fitness">Fitness</option>
->>>>>>> e60bcf5a6b827a2f330ce67496ab2097ea1986a3
+                            <option value="fitness">fitness</option>
                             <option value="Meditation">Meditation</option>
                         </select>
 
                         <label for="date">Class Date</label>
-                        <input type="date" id="date" name="date" required />
+                        <input type="date" id="date" name="date" class="booking-date" required />
 
                         <button class="btn-book" type="submit">Book Class</button>
                         {% if success %}
@@ -256,6 +252,24 @@
                 </div>
             </div>
         </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script>
+        // Prevent selecting past dates on booking date inputs across templates.
+        document.addEventListener('DOMContentLoaded', function () {
+            const today = new Date().toISOString().split('T')[0];
+            // Add min attribute to any input with the booking-date class
+            document.querySelectorAll('input.booking-date').forEach(function (el) {
+                try { el.setAttribute('min', today); } catch (e) { /* ignore */ }
+            });
+            // For plain inputs[type=date] without class, also set min (fallback)
+            document.querySelectorAll('input[type="date"]:not(.booking-date)').forEach(function (el) {
+                try { el.setAttribute('min', today); } catch (e) { /* ignore */ }
+            });
+        });
+    </script>
 </body>
 </html>
