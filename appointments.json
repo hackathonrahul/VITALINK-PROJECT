@@ -1,26 +1,11 @@
 [
   {
     "type": "wellness",
-    "name": "Alice",
-    "date": "2025-11-20",
-    "day": "Thursday",
-    "class_name": "Yoga",
-    "timestamp": "2025-11-11T09:28:23.900646"
-  },
-  {
-    "type": "doctor",
-    "name": "gg",
+    "name": "shashank",
     "date": "2025-11-12",
     "day": "Wednesday",
-    "reason": "fwejhiuf",
-    "timestamp": "2025-11-11T09:56:15.891472"
-  },
-  {
-    "type": "wellness",
-    "name": "Sravan",
-    "date": "2025-11-26",
-    "day": "Wednesday",
-    "class_name": "Yoga",
-    "timestamp": "2025-11-11T09:56:40.652122"
+    "class_name": "Gym",
+    "user_id": "61b11159-03b3-4bb6-8dfe-01b4d42bf0ac",
+    "timestamp": "2025-11-11T17:16:39.914864"
   }
 ]
