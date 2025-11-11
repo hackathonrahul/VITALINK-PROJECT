@@ -6,13 +6,13 @@
     <title>Wellness Programs</title>
     <style>
       body {
-        background: #1b78d6ff;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f0f4f8;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
         padding: 20px;
       }
       .container {
-        max-width: 800px;
+        max-width: 1100px;
         margin: 0 auto;
       }
       .header {
@@ -21,8 +21,13 @@
       }
       .header h1 {
         color: #225983;
-        margin-bottom: 10px;
+        margin: 0 0 10px;
         font-weight: 600;
+        font-size: 28px;
+      }
+      .header p {
+        color: #495C6B;
+        margin: 0;
       }
       .program-grid {
         display: grid;
@@ -33,14 +38,15 @@
       .program-card {
         background: #fff;
         border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
         padding: 20px;
         text-align: center;
-        transition: transform 0.2s;
         cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
       }
       .program-card:hover {
         transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
       }
       .program-card:active {
         animation: pop 0.3s ease-out;
@@ -78,16 +84,20 @@
         color: #fff;
         border: none;
         padding: 8px 20px;
-        border-radius: 6px;
+        border-radius: 8px;
         font-weight: 600;
         font-size: 14px;
         cursor: pointer;
         margin-top: 15px;
         text-decoration: none;
         display: inline-block;
+        transition: background 0.2s;
       }
       .btn-book:hover {
         background: #1e6fcc;
+      }
+      .btn-book:active {
+        animation: pop 0.3s ease-out;
       }
     </style>
   </head>
@@ -108,53 +118,45 @@
 
       <div class="program-grid">
         <div class="program-card">
-          <div class="program-icon">🧘</div>
-          <div class="program-title">Yoga</div>
+          <div class="program-icon">🏋️</div>
+          <div class="program-title">Gym</div>
           <div class="program-description">
-            Improve flexibility, strength, and mental clarity with our
-            expert-led yoga sessions.
+            Professional weightlifting and strength training with certified instructors.
           </div>
-          <a href="{{ url_for('yoga') }}" class="btn-book">Join Class</a>
+          <a href="{{ url_for('book_wellness', cls='Gym') }}" class="btn-book">Join Class</a>
         </div>
 
         <div class="program-card">
-          <div class="program-icon">💃</div>
-          <div class="program-title">Zumba</div>
+          <div class="program-icon">🏃‍♂️</div>
+          <div class="program-title">Marathon Camp</div>
           <div class="program-description">
-            Fun cardio workouts that combine dance and fitness for all levels.
+            Build endurance and train for marathons with experienced coaches.
           </div>
-          <a href="{{ url_for('zumba') }}" class="btn-book">Join Class</a>
+          <a href="{{ url_for('book_wellness', cls='Marathon Camp') }}" class="btn-book">Join Class</a>
         </div>
 
         <div class="program-card">
-          <div class="program-icon">🧠</div>
-          <div class="program-title">Meditation</div>
+          <div class="program-icon">🥊</div>
+          <div class="program-title">Boxing</div>
           <div class="program-description">
-            Learn mindfulness techniques for stress reduction and mental
-            wellness.
+            Learn boxing techniques for fitness and self-defense from pro trainers.
           </div>
-          <a href="{{ url_for('Meditation') }}" class="btn-book">Join Class</a>
+          <a href="{{ url_for('book_wellness', cls='Boxing') }}" class="btn-book">Join Class</a>
         </div>
 
         <div class="program-card">
-          <div class="program-icon">🏃</div>
-          <div class="program-title">Fitness</div>
+          <div class="program-icon">🥋</div>
+          <div class="program-title">Karate</div>
           <div class="program-description">
-            Group fitness classes for strength, cardio, and overall health.
+            Master karate discipline and martial arts skills in a supportive environment.
           </div>
-          <a href="{{ url_for('Fitness') }}" class="btn-book">Join Class</a>
+          <a href="{{ url_for('book_wellness', cls='Karate') }}" class="btn-book">Join Class</a>
         </div>
       </div>
 
       <div style="text-align: center">
-        <a href="{{ url_for('dashboard') }}" class="back-link"
-          >← Back to Dashboard</a
-        >
+        <a href="{{ url_for('dashboard') }}" class="back-link">← Back to Dashboard</a>
       </div>
     </div>
-<<<<<<< HEAD
-</body>
-=======
   </body>
->>>>>>> 176054d6fafbae6a0ff23cb2c6c4d076b13bd864
 </html>
