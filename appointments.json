@@ -6,5 +6,21 @@
     "day": "Thursday",
     "class_name": "Yoga",
     "timestamp": "2025-11-11T09:28:23.900646"
+  },
+  {
+    "type": "doctor",
+    "name": "gg",
+    "date": "2025-11-12",
+    "day": "Wednesday",
+    "reason": "fwejhiuf",
+    "timestamp": "2025-11-11T09:56:15.891472"
+  },
+  {
+    "type": "wellness",
+    "name": "Sravan",
+    "date": "2025-11-26",
+    "day": "Wednesday",
+    "class_name": "Yoga",
+    "timestamp": "2025-11-11T09:56:40.652122"
   }
 ]
