@@ -16,6 +16,7 @@ app = Flask(__name__)
 #added comment
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['APPOINTMENTS_FILE'] = 'appointments.json'
+app.config['REPORTS_FILE'] = 'reports.json'
 app.config['USERS_FILE'] = 'users.json'
 app.secret_key = os.environ.get('FLASK_SECRET', 'dev-secret-please-change')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -54,6 +55,31 @@ def _load_users():
         except Exception:
             return []
     return []
+
+
+def _load_reports():
+    """Load uploaded report metadata from JSON file."""
+    p = app.config.get('REPORTS_FILE')
+    if p and os.path.exists(p):
+        try:
+            with open(p, 'r') as f:
+                return json.load(f)
+        except Exception:
+            return []
+    return []
+
+
+def _save_report(report):
+    """Append a report record to reports.json safely."""
+    p = app.config.get('REPORTS_FILE')
+    reports = _load_reports()
+    reports.append(report)
+    try:
+        with open(p, 'w') as f:
+            json.dump(reports, f, indent=2)
+    except Exception:
+        # best-effort: ignore write errors
+        pass
 
 
 def _save_user(user):
@@ -352,16 +378,24 @@ def book_wellness():
 def health_report():
     extracted_text = None
     error = None
+    # Load past reports for current user if logged in
+    reports = _load_reports()
+    user_reports = []
+    if session.get('user_id'):
+        uid = session.get('user_id')
+        user_reports = [r for r in reports if r.get('user_id') == uid]
+
     if request.method == 'POST':
         file = request.files.get('file')
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            # Save uploads under a per-user folder when possible so users can
-            # access their own previous uploads.
-            user_id = session.get('user_id') or 'anonymous'
-            user_dir = os.path.join(app.config['UPLOAD_FOLDER'], user_id)
-            os.makedirs(user_dir, exist_ok=True)
-            path = os.path.join(user_dir, filename)
+            original_name = file.filename
+            filename = secure_filename(original_name)
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            # ensure filename uniqueness by prefixing timestamp if collision
+            if os.path.exists(path):
+                base, ext = os.path.splitext(filename)
+                filename = f"{base}_{int(datetime.now().timestamp())}{ext}"
+                path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(path)
             ext = filename.rsplit('.', 1)[1].lower()
             try:
@@ -372,25 +406,25 @@ def health_report():
                         extracted_text = "\n".join(pages)
                         # If no text found, fall back to rendering pages as images and OCR them
                         if not extracted_text.strip():
-                                texts = []
-                                # Ensure pytesseract points to the tesseract binary if available
-                                tpath = _get_tesseract_path()
-                                if tpath:
-                                    pytesseract.pytesseract.tesseract_cmd = tpath
-                                for page in pdf.pages:
-                                    page_text = page.extract_text() or ""
-                                    if not page_text:
-                                        # Fallback: render page to an image and OCR it
-                                        try:
-                                            imgobj = page.to_image(resolution=300)
-                                            pil_img = imgobj.original
-                                            ocr = pytesseract.image_to_string(pil_img)
-                                            page_text = ocr or ""
-                                        except Exception:
-                                            # If rendering/OCR fails, keep page_text empty
-                                            page_text = page_text
-                                    texts.append(page_text)
-                                extracted_text = "\n".join(texts)
+                            texts = []
+                            # Ensure pytesseract points to the tesseract binary if available
+                            tpath = _get_tesseract_path()
+                            if tpath:
+                                pytesseract.pytesseract.tesseract_cmd = tpath
+                            for page in pdf.pages:
+                                page_text = page.extract_text() or ""
+                                if not page_text:
+                                    # Fallback: render page to an image and OCR it
+                                    try:
+                                        imgobj = page.to_image(resolution=300)
+                                        pil_img = imgobj.original
+                                        ocr = pytesseract.image_to_string(pil_img)
+                                        page_text = ocr or ""
+                                    except Exception:
+                                        # If rendering/OCR fails, keep page_text empty
+                                        page_text = page_text
+                                texts.append(page_text)
+                            extracted_text = "\n".join(texts)
                 else:
                     # Check that the tesseract binary is available before calling pytesseract
                     tpath = _get_tesseract_path()
@@ -404,30 +438,58 @@ def health_report():
                         extracted_text = pytesseract.image_to_string(img)
             except Exception as e:
                 error = f"Failed to process file: {str(e)}"
+            # Save metadata about uploaded report with extracted content
+            try:
+                report = {
+                    'id': str(uuid4()),
+                    'filename': filename,
+                    'original_name': original_name,
+                    'user_id': session.get('user_id'),
+                    'uploaded_at': datetime.now().isoformat(),
+                    'extracted_content': extracted_text or ""
+                }
+                _save_report(report)
+                if session.get('user_id'):
+                    user_reports.insert(0, report)
+            except Exception:
+                pass
         else:
             error = "Invalid file type. Only PDF or image files allowed."
-    # Build a per-user list of past uploaded reports (file name + relative URL)
-    user_id = session.get('user_id') or 'anonymous'
-    user_dir = os.path.join(app.config['UPLOAD_FOLDER'], user_id)
-    past_reports = []
-    if os.path.exists(user_dir):
-        for fname in sorted(os.listdir(user_dir), key=lambda f: os.path.getmtime(os.path.join(user_dir, f)), reverse=True):
-            fpath = os.path.join(user_dir, fname)
-            if os.path.isfile(fpath):
-                past_reports.append({
-                    'name': fname,
-                    'url': url_for('uploaded_file', filepath=f"{user_id}/{fname}"),
-                    'mtime': datetime.fromtimestamp(os.path.getmtime(fpath)).isoformat()
-                })
-
     # Note: template filename is `healthReport.html` in templates/ directory
-    return render_template('healthReport.html', extracted_text=extracted_text, error=error, past_reports=past_reports)
+    return render_template('healthReport.html', extracted_text=extracted_text, error=error, user_reports=user_reports)
 
 
-@app.route('/uploads/<path:filepath>')
-def uploaded_file(filepath):
-    # Serve uploaded files from the uploads directory, allowing subpaths for per-user files
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filepath)
+@app.route('/uploads/<path:filename>')
+def uploaded_file(filename):
+    """Serve uploaded files only if the current user is the owner or file is public."""
+    # Find report metadata
+    reports = _load_reports()
+    rec = None
+    for r in reports:
+        if r.get('filename') == filename:
+            rec = r
+            break
+    # If a record exists and has user_id, require same user
+    if rec and rec.get('user_id'):
+        if session.get('user_id') != rec.get('user_id'):
+            return "Forbidden", 403
+    # Otherwise allow (or file not recorded)
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+
+@app.route('/my_health_reports')
+def my_health_reports():
+    """Display all past health reports with extracted content for logged-in user."""
+    if not session.get('user_id'):
+        return redirect(url_for('login'))
+    
+    reports = _load_reports()
+    user_id = session.get('user_id')
+    user_reports = [r for r in reports if r.get('user_id') == user_id]
+    # Sort by upload date, newest first
+    user_reports.sort(key=lambda x: x.get('uploaded_at', ''), reverse=True)
+    
+    return render_template('my_health_reports.html', reports=user_reports)
 
 @app.route('/yoga', methods=['GET', 'POST'])
 def yoga():

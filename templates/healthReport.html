@@ -11,20 +11,28 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            padding: 20px;
         }
         .container {
             background: #fff;
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(70, 80, 90, 0.12);
             padding: 36px 32px;
-            width: 400px;
+            width: 100%;
+            max-width: 600px;
             text-align: center;
         }
         h2 {
             color: #225983;
             margin-bottom: 24px;
             font-weight: 600;
+        }
+        h3 {
+            color: #225983;
+            margin: 20px 0 12px 0;
+            font-weight: 600;
+            text-align: left;
         }
         input[type="file"] {
             margin-bottom: 18px;
@@ -58,6 +66,70 @@
             max-height: 280px;
             overflow: auto;
             white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .report-card {
+            background: #f7f8fa;
+            border: 1px solid #e1e6ee;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .report-card:hover {
+            box-shadow: 0 4px 12px rgba(70, 80, 90, 0.1);
+        }
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #225983;
+        }
+        .report-date {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+        }
+        .report-content {
+            display: none;
+            background: #fff;
+            border-top: 1px solid #e1e6ee;
+            margin-top: 10px;
+            padding-top: 10px;
+            max-height: 300px;
+            overflow: auto;
+            color: #26314a;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .report-content.show {
+            display: block;
+        }
+        .toggle-icon {
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+        .report-card.expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+        .view-all-link {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 8px 16px;
+            background: #e8f2ff;
+            color: #225983;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid #d0e0ff;
+        }
+        .view-all-link:hover {
+            background: #d0e0ff;
         }
     </style>
 </head>
@@ -77,19 +149,38 @@
                 {{ extracted_text }}
             </div>
         {% endif %}
-        {% if past_reports and past_reports|length > 0 %}
-            <div style="text-align:left; margin-top:18px;">
-                <h3 style="color:#225983; margin-bottom:8px;">Previously uploaded reports</h3>
-                <ul style="padding-left:18px; max-height:180px; overflow:auto; text-align:left;">
-                    {% for r in past_reports %}
-                        <li style="margin-bottom:6px;">
-                            <a href="{{ r.url }}" target="_blank" rel="noopener noreferrer">{{ r.name }}</a>
-                            <small style="color:#65748b; margin-left:8px;">&nbsp;({{ r.mtime.split('T')[0] }})</small>
-                        </li>
-                    {% endfor %}
-                </ul>
+
+        {% if user_reports and user_reports|length > 0 %}
+            <h3>📋 Your Past Health Reports</h3>
+            <div id="reports-list">
+            {% for r in user_reports %}
+                <div class="report-card" onclick="toggleReport(this)">
+                    <div class="report-header">
+                        <span>{{ r.original_name or r.filename }}</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="report-date">
+                        Uploaded: {{ r.uploaded_at.split('T')[0] }} at {{ r.uploaded_at.split('T')[1].split('.')[0] if r.uploaded_at }}
+                    </div>
+                    <div class="report-content">
+                        {% if r.extracted_content %}
+                            {{ r.extracted_content }}
+                        {% else %}
+                            <em>No text extracted from this report.</em>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
             </div>
+            <a href="{{ url_for('my_health_reports') }}" class="view-all-link">📊 View All Reports</a>
         {% endif %}
     </div>
+
+    <script>
+        function toggleReport(el) {
+            el.classList.toggle('expanded');
+            el.querySelector('.report-content').classList.toggle('show');
+        }
+    </script>
 </body>
 </html>

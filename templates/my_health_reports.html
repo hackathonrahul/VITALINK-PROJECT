@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Health Reports - Vitalink</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f0f4f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(70, 80, 90, 0.12);
+            padding: 32px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            border-bottom: 2px solid #e1e6ee;
+            padding-bottom: 16px;
+        }
+        .header h1 {
+            color: #225983;
+            font-size: 24px;
+        }
+        .back-btn {
+            padding: 8px 16px;
+            background: #e8f2ff;
+            color: #225983;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            border: 1px solid #d0e0ff;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .back-btn:hover {
+            background: #d0e0ff;
+        }
+        .reports-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .report-item {
+            background: #f7f8fa;
+            border: 1px solid #e1e6ee;
+            border-radius: 10px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .report-item:hover {
+            box-shadow: 0 4px 12px rgba(70, 80, 90, 0.1);
+            border-color: #3096f3;
+        }
+        .report-item.expanded {
+            border-color: #3096f3;
+        }
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        .report-title {
+            font-weight: 600;
+            color: #225983;
+            font-size: 16px;
+            flex: 1;
+            word-break: break-word;
+        }
+        .report-date {
+            font-size: 12px;
+            color: #888;
+            text-align: right;
+            white-space: nowrap;
+            margin-left: 12px;
+        }
+        .toggle-icon {
+            font-size: 16px;
+            color: #3096f3;
+            transition: transform 0.2s;
+            margin-left: 12px;
+        }
+        .report-item.expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+        .report-content {
+            display: none;
+            background: #fff;
+            border-top: 1px solid #e1e6ee;
+            margin-top: 12px;
+            padding-top: 12px;
+            max-height: 400px;
+            overflow: auto;
+            color: #26314a;
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            line-height: 1.5;
+        }
+        .report-content.show {
+            display: block;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
+        }
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        .empty-state p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .action-link {
+            padding: 10px 20px;
+            background: #3096f3;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .action-link:hover {
+            background: #1e6fcc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 My Health Reports</h1>
+            <a href="{{ url_for('profile') }}" class="back-btn">← Back to Profile</a>
+        </div>
+
+        {% if reports and reports|length > 0 %}
+            <div class="reports-list">
+            {% for report in reports %}
+                <div class="report-item" onclick="toggleReport(event)">
+                    <div class="report-header">
+                        <div>
+                            <div class="report-title">{{ report.original_name or report.filename }}</div>
+                            <div class="report-date">
+                                {{ report.uploaded_at.split('T')[0] }} 
+                                {{ report.uploaded_at.split('T')[1].split('.')[0] if report.uploaded_at }}
+                            </div>
+                        </div>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="report-content">
+                        {% if report.extracted_content %}
+                            {{ report.extracted_content }}
+                        {% else %}
+                            <em style="color: #999;">No text extracted from this report.</em>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">📄</div>
+                <p>No health reports uploaded yet.</p>
+                <a href="{{ url_for('health_report') }}" class="action-link">Upload Your First Report</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function toggleReport(event) {
+            const item = event.currentTarget;
+            item.classList.toggle('expanded');
+            item.querySelector('.report-content').classList.toggle('show');
+        }
+    </script>
+</body>
+</html>
