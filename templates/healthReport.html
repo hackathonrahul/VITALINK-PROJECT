@@ -77,6 +77,19 @@
                 {{ extracted_text }}
             </div>
         {% endif %}
+        {% if past_reports and past_reports|length > 0 %}
+            <div style="text-align:left; margin-top:18px;">
+                <h3 style="color:#225983; margin-bottom:8px;">Previously uploaded reports</h3>
+                <ul style="padding-left:18px; max-height:180px; overflow:auto; text-align:left;">
+                    {% for r in past_reports %}
+                        <li style="margin-bottom:6px;">
+                            <a href="{{ r.url }}" target="_blank" rel="noopener noreferrer">{{ r.name }}</a>
+                            <small style="color:#65748b; margin-left:8px;">&nbsp;({{ r.mtime.split('T')[0] }})</small>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
     </div>
 </body>
 </html>
