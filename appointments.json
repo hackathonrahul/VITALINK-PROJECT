@@ -16,5 +16,14 @@
     "class_name": "Yoga",
     "user_id": "e5a70a62-6797-4696-86c4-d3be881d5ed9",
     "timestamp": "2025-11-12T08:22:30.496967"
+  },
+  {
+    "type": "wellness",
+    "name": "cnjs",
+    "date": "2025-11-14",
+    "day": "Friday",
+    "class_name": "Boxing",
+    "user_id": "e5a70a62-6797-4696-86c4-d3be881d5ed9",
+    "timestamp": "2025-11-12T08:33:06.684857"
   }
 ]
