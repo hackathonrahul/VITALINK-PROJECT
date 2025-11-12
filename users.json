@@ -6,5 +6,13 @@
     "phone": "+91 6361146881",
     "username": "sudarshan",
     "password_hash": "scrypt:32768:8:1$LOb6XBvv7cTjHuVx$ccf00c38ab3d64d095b0dc178f9a29e24855be444e211143b4ef68b55720d57ea10027595871dbbc93d60d6b8fbd682aea6772b5142e8738a0f9434e0b73364b"
+  },
+  {
+    "id": "e5a70a62-6797-4696-86c4-d3be881d5ed9",
+    "name": "Rahul G",
+    "email": "iamvillen23@gmail.com",
+    "phone": "6361146881",
+    "username": "Rahul G",
+    "password_hash": "scrypt:32768:8:1$hyrVJ6PSAeaDvaxy$dd8cd674a25904189c0b167ea3214269add43918f3791dafba7dfc275456bce35bdd9f7bfd54bc8b113ba2af8ac59fdf2dfdf4ca068e7fe959cc34225909716a"
   }
 ]
