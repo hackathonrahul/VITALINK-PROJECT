@@ -22,5 +22,13 @@
     "day": "Wednesday",
     "class_name": "Yoga",
     "timestamp": "2025-11-11T09:56:40.652122"
+  },
+  {
+    "type": "wellness",
+    "name": "cnjs",
+    "date": "2025-11-27",
+    "day": "Thursday",
+    "class_name": "mudra",
+    "timestamp": "2025-11-11T10:33:23.500940"
   }
 ]
