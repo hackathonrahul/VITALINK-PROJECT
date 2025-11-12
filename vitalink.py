@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash, send_from_directory
 import os
 from werkzeug.utils import secure_filename
 import pdfplumber
@@ -356,7 +356,12 @@ def health_report():
         file = request.files.get('file')
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            # Save uploads under a per-user folder when possible so users can
+            # access their own previous uploads.
+            user_id = session.get('user_id') or 'anonymous'
+            user_dir = os.path.join(app.config['UPLOAD_FOLDER'], user_id)
+            os.makedirs(user_dir, exist_ok=True)
+            path = os.path.join(user_dir, filename)
             file.save(path)
             ext = filename.rsplit('.', 1)[1].lower()
             try:
@@ -401,8 +406,28 @@ def health_report():
                 error = f"Failed to process file: {str(e)}"
         else:
             error = "Invalid file type. Only PDF or image files allowed."
+    # Build a per-user list of past uploaded reports (file name + relative URL)
+    user_id = session.get('user_id') or 'anonymous'
+    user_dir = os.path.join(app.config['UPLOAD_FOLDER'], user_id)
+    past_reports = []
+    if os.path.exists(user_dir):
+        for fname in sorted(os.listdir(user_dir), key=lambda f: os.path.getmtime(os.path.join(user_dir, f)), reverse=True):
+            fpath = os.path.join(user_dir, fname)
+            if os.path.isfile(fpath):
+                past_reports.append({
+                    'name': fname,
+                    'url': url_for('uploaded_file', filepath=f"{user_id}/{fname}"),
+                    'mtime': datetime.fromtimestamp(os.path.getmtime(fpath)).isoformat()
+                })
+
     # Note: template filename is `healthReport.html` in templates/ directory
-    return render_template('healthReport.html', extracted_text=extracted_text, error=error)
+    return render_template('healthReport.html', extracted_text=extracted_text, error=error, past_reports=past_reports)
+
+
+@app.route('/uploads/<path:filepath>')
+def uploaded_file(filepath):
+    # Serve uploaded files from the uploads directory, allowing subpaths for per-user files
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filepath)
 
 @app.route('/yoga', methods=['GET', 'POST'])
 def yoga():
