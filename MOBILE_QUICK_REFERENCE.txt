@@ -1,0 +1,84 @@
+# 📱 VITALINK MOBILE ACCESS - QUICK REFERENCE
+
+## 🚀 Quick Start
+
+**On your mobile device, open browser and go to:**
+```
+http://10.0.2.90:5000
+```
+
+or 
+
+```
+http://172.17.0.1:5000
+```
+
+---
+
+## ✅ Requirements
+
+- [ ] Mobile device (iOS/Android)
+- [ ] On the **same Wi-Fi network** as the server
+- [ ] Web browser installed
+- [ ] Server running: `python vitalink.py`
+
+---
+
+## 🎯 What You Can Do
+
+| Feature | Mobile | Desktop |
+|---------|--------|---------|
+| Register & Login | ✅ | ✅ |
+| View/Edit Profile | ✅ | ✅ |
+| Book Doctor Appointments | ✅ | ✅ |
+| Book Wellness Classes | ✅ | ✅ |
+| View My Appointments | ✅ | ✅ |
+| Health Report Upload & OCR | ✅ | ✅ |
+| AI Health Chat | ✅ | ✅ |
+| Wellness Hub | ✅ | ✅ |
+
+---
+
+## 🔧 Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| Can't connect | Check same Wi-Fi network, use correct IP |
+| Connection timeout | Restart server: `pkill -f vitalink` then `python vitalink.py &` |
+| Page won't load | Verify port 5000 is listening: `netstat -tlnp \| grep 5000` |
+| Server crashed | Check logs: `tail -f /tmp/flask.log` |
+
+---
+
+## 📲 Alternative IPs to Try
+
+Run this to see all available IPs:
+```bash
+hostname -I
+```
+
+Use any IP with `:5000` port, for example:
+- `http://192.168.x.x:5000`
+- `http://10.0.x.x:5000`
+
+---
+
+## 🛑 Stop Server
+
+```bash
+pkill -f "python.*vitalink"
+```
+
+---
+
+## ▶️ Start Server
+
+```bash
+cd /workspaces/VITALINK-PROJECT
+python vitalink.py &
+```
+
+---
+
+**Last Updated:** November 12, 2025
+**Status:** ✅ Mobile Ready
