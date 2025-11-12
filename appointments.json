@@ -1,3 +1,20 @@
 [
-  
+  {
+    "type": "doctor",
+    "name": "Rahul G",
+    "date": "2025-11-13",
+    "day": "Thursday",
+    "reason": "stomach pain",
+    "user_id": "e5a70a62-6797-4696-86c4-d3be881d5ed9",
+    "timestamp": "2025-11-12T08:22:13.326725"
+  },
+  {
+    "type": "wellness",
+    "name": "Rahul G",
+    "date": "2025-11-20",
+    "day": "Thursday",
+    "class_name": "Yoga",
+    "user_id": "e5a70a62-6797-4696-86c4-d3be881d5ed9",
+    "timestamp": "2025-11-12T08:22:30.496967"
+  }
 ]
