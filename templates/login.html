@@ -47,7 +47,9 @@
             transition: border-color 0.3s;
         }
         input[type="text"]:focus,
-        input[type="password"]:focus {
+        input[type="password"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus {
             border-color: #3096f3;
             outline: none;
         }
@@ -76,20 +78,70 @@
 <body>
     <div class="login-container">
         <h2>Welcome to Vitalink</h2>
-        <form method="post">
-            <div class="input-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" placeholder="Enter username" required />
+        <div id="auth-forms">
+            <form id="login-form" method="post">
+                <input type="hidden" name="action" value="login" />
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter username" required />
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter password" required />
+                </div>
+                <button class="btn-login" type="submit">Login</button>
+            </form>
+
+            <form id="register-form" method="post" style="display:none; margin-top:14px; text-align:left;">
+                <input type="hidden" name="action" value="register" />
+                <div class="input-group">
+                    <label for="name">Full name</label>
+                    <input type="text" id="name" name="name" placeholder="Your full name" />
+                </div>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="text" id="email" name="email" placeholder="you@example.com" />
+                </div>
+                <div class="input-group">
+                    <label for="phone">Phone number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="+1 (555) 000-0000" />
+                </div>
+                <div class="input-group">
+                    <label for="username_r">Username</label>
+                    <input type="text" id="username_r" name="username" placeholder="Pick a username" />
+                </div>
+                <div class="input-group">
+                    <label for="password_r">Password</label>
+                    <input type="password" id="password_r" name="password" placeholder="Choose a password" />
+                </div>
+                <button class="btn-login" type="submit">Create account</button>
+            </form>
+
+            <div style="margin-top:12px; text-align:center; font-size:14px; color:#556673;">
+                <a href="#" id="show-register">New user? Create an account</a>
+                <a href="#" id="show-login" style="display:none; margin-left:12px;">Already have an account? Login</a>
             </div>
-            <div class="input-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter password" required />
-            </div>
-            <button class="btn-login" type="submit">Login</button>
+
             {% if error %}
                 <p class="error-message">{{ error }}</p>
             {% endif %}
-        </form>
+        </div>
+        <script>
+            document.getElementById('show-register').addEventListener('click', function(e){
+                e.preventDefault();
+                document.getElementById('login-form').style.display='none';
+                document.getElementById('register-form').style.display='block';
+                this.style.display='none';
+                document.getElementById('show-login').style.display='inline';
+            });
+            document.getElementById('show-login').addEventListener('click', function(e){
+                e.preventDefault();
+                document.getElementById('login-form').style.display='block';
+                document.getElementById('register-form').style.display='none';
+                this.style.display='none';
+                document.getElementById('show-register').style.display='inline';
+            });
+        </script>
     </div>
 </body>
 </html>

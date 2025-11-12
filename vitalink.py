@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
 import os
 from werkzeug.utils import secure_filename
 import pdfplumber
@@ -9,11 +9,15 @@ import os
 import requests
 import json
 from datetime import datetime
+from uuid import uuid4
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 #added comment
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['APPOINTMENTS_FILE'] = 'appointments.json'
+app.config['USERS_FILE'] = 'users.json'
+app.secret_key = os.environ.get('FLASK_SECRET', 'dev-secret-please-change')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'pdf'}
@@ -38,6 +42,66 @@ def _load_appointments():
             except Exception:
                 return []
     return []
+
+
+def _load_users():
+    """Load users from JSON file."""
+    p = app.config.get('USERS_FILE')
+    if p and os.path.exists(p):
+        try:
+            with open(p, 'r') as f:
+                return json.load(f)
+        except Exception:
+            return []
+    return []
+
+
+def _save_user(user):
+    p = app.config.get('USERS_FILE')
+    users = _load_users()
+    users.append(user)
+    temp = p + '.tmp'
+    with open(temp, 'w') as f:
+        json.dump(users, f, indent=2)
+    os.replace(temp, p)
+
+
+def _update_user(user_id, updates: dict):
+    """Update an existing user by id with fields from updates dict.
+
+    Returns True if updated, False if user not found.
+    """
+    p = app.config.get('USERS_FILE')
+    users = _load_users()
+    changed = False
+    for u in users:
+        if u.get('id') == user_id:
+            # update allowed fields only
+            for k, v in updates.items():
+                if k in ('name', 'email', 'phone'):
+                    u[k] = v
+            changed = True
+            break
+    if changed:
+        temp = p + '.tmp'
+        with open(temp, 'w') as f:
+            json.dump(users, f, indent=2)
+        os.replace(temp, p)
+    return changed
+
+
+def _find_user_by_username(username):
+    for u in _load_users():
+        if u.get('username') == username:
+            return u
+    return None
+
+
+def _get_user_by_id(uid):
+    for u in _load_users():
+        if u.get('id') == uid:
+            return u
+    return None
 
 
 def _save_appointment(appointment):
@@ -77,23 +141,139 @@ def _get_tesseract_path():
 @app.route('/', methods=['GET', 'POST'])
 def login():
     error = None
+    # If user is already logged in, redirect to dashboard
+    if session.get('user_id'):
+        return redirect(url_for('dashboard'))
+
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        if username == 'admin' and password == '123':
-            # redirect to the dashboard view (function name 'dashboard')
-            return redirect(url_for('dashboard'))
+        # Distinguish between register and login actions by a hidden field
+        action = request.form.get('action')
+        if action == 'register':
+            name = request.form.get('name')
+            email = request.form.get('email')
+            phone = request.form.get('phone')
+            username = request.form.get('username')
+            password = request.form.get('password')
+            if not username or not password:
+                error = 'Username and password are required for registration.'
+            elif _find_user_by_username(username):
+                error = 'Username already exists. Choose another.'
+            else:
+                uid = str(uuid4())
+                user = {
+                    'id': uid,
+                    'name': name,
+                    'email': email,
+                    'phone': phone,
+                    'username': username,
+                    'password_hash': generate_password_hash(password)
+                }
+                _save_user(user)
+                session['user_id'] = uid
+                return redirect(url_for('dashboard'))
         else:
-            error = "Invalid credentials. Please try again."
+            username = request.form.get('username')
+            password = request.form.get('password')
+            # admin fallback
+            if username == 'admin' and password == '123':
+                session['user_id'] = 'admin'
+                return redirect(url_for('dashboard'))
+            user = _find_user_by_username(username)
+            if not user or not check_password_hash(user.get('password_hash', ''), password):
+                error = 'Invalid username or password.'
+            else:
+                session['user_id'] = user.get('id')
+                return redirect(url_for('dashboard'))
+
     return render_template('login.html', error=error)
 
 @app.route('/vitalink')
 def dashboard():
     # Load appointments and pass to template
-    appointments = _load_appointments()
-    # Sort by date
-    appointments.sort(key=lambda x: x.get('date', ''))
-    return render_template('vitalink.html', appointments=appointments)
+    all_appointments = _load_appointments()
+    # Sort by date (empty dates sort first)
+    all_appointments.sort(key=lambda x: x.get('date', '') or '')
+
+    current_user = None
+    my_appointments = []
+    other_appointments = []
+    
+    uid = session.get('user_id')
+    if uid:
+        if uid == 'admin':
+            # admin sees everything
+            current_user = {'id': 'admin', 'name': 'Administrator', 'email': ''}
+            my_appointments = all_appointments
+            other_appointments = []
+        else:
+            current_user = _get_user_by_id(uid)
+            # Separate user's appointments from others
+            my_appointments = [a for a in all_appointments if a.get('user_id') == uid]
+            other_appointments = [a for a in all_appointments if a.get('user_id') != uid]
+    else:
+        # not logged in: no personal appointments
+        my_appointments = []
+        other_appointments = []
+
+    return render_template('vitalink.html', 
+                         my_appointments=my_appointments, 
+                         other_appointments=other_appointments,
+                         current_user=current_user)
+
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    return redirect(url_for('login'))
+
+
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    """Show and allow editing of the logged-in user's profile (name, email).
+
+    Admin is shown a read-only profile.
+    """
+    uid = session.get('user_id')
+    if not uid:
+        return redirect(url_for('login'))
+
+    if uid == 'admin':
+        current_user = {'id': 'admin', 'name': 'Administrator', 'email': ''}
+        if request.method == 'POST':
+            flash('Administrator profile cannot be edited here.')
+            return redirect(url_for('profile'))
+        return render_template('profile.html', current_user=current_user)
+
+    current_user = _get_user_by_id(uid)
+    if not current_user:
+        flash('User not found. Please log in again.')
+        session.pop('user_id', None)
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip()
+        phone = request.form.get('phone', '').strip()
+        updates = {}
+        if name:
+            updates['name'] = name
+        if email:
+            updates['email'] = email
+        if phone:
+            updates['phone'] = phone
+        if updates:
+            ok = _update_user(uid, updates)
+            if ok:
+                flash('Profile updated.')
+                # refresh current_user from storage
+                current_user = _get_user_by_id(uid)
+            else:
+                flash('Failed to update profile.')
+        else:
+            flash('No changes submitted.')
+        return redirect(url_for('profile'))
+
+    return render_template('profile.html', current_user=current_user)
 
 
 @app.route('/bookdoctor', methods=['GET', 'POST'])
@@ -111,6 +291,7 @@ def bookdoctor():
             'date': date,
             'day': _get_day_name(date),
             'reason': reason,
+            'user_id': session.get('user_id'),
             'timestamp': datetime.now().isoformat()
         }
         _save_appointment(appointment)
@@ -125,7 +306,15 @@ def appointment():
     # Read confirmation data from query params (set by the POST redirect)
     name = request.args.get('name', 'Patient')
     date = request.args.get('date', '')
-    return render_template('book doctor/appointment.html', name=name, date=date)
+    
+    # Load and display all appointments from appointments.json
+    all_appointments = _load_appointments()
+    all_appointments.sort(key=lambda x: x.get('date', '') or '', reverse=True)
+    
+    return render_template('book doctor/appointment.html', 
+                         name=name, 
+                         date=date, 
+                         appointments=all_appointments)
 
 #added nothing
 @app.route('/wellnessclasses')
@@ -148,6 +337,7 @@ def book_wellness():
             'date': date,
             'day': _get_day_name(date),
             'class_name': class_name,
+            'user_id': session.get('user_id'),
             'timestamp': datetime.now().isoformat()
         }
         _save_appointment(appointment)
@@ -228,6 +418,7 @@ def yoga():
             'date': date,
             'day': _get_day_name(date),
             'class_name': selected_class,
+            'user_id': session.get('user_id'),
             'timestamp': datetime.now().isoformat()
         }
         _save_appointment(appointment)
@@ -285,6 +476,7 @@ def zumba():
             'date': date,
             'day': _get_day_name(date),
             'class_name': selected_class,
+            'user_id': session.get('user_id'),
             'timestamp': datetime.now().isoformat()
         }
         _save_appointment(appointment)
@@ -307,6 +499,7 @@ def Meditation():
             'date': date,
             'day': _get_day_name(date),
             'class_name': selected_class,
+            'user_id': session.get('user_id'),
             'timestamp': datetime.now().isoformat()
         }
         _save_appointment(appointment)
@@ -329,6 +522,7 @@ def mudra():
             'date': date,
             'day': _get_day_name(date),
             'class_name': selected_class,
+            'user_id': session.get('user_id'),
             'timestamp': datetime.now().isoformat()
         }
         _save_appointment(appointment)
@@ -405,6 +599,5 @@ def chat():
     return render_template('chatWithAI.html', ai_response=ai_response, error=error)
 
 if __name__ == '__main__':
-    app.run(debug=True) 
- #JUST A TESTING
+    app.run(host='0.0.0.0', port=5000, debug=True)
  

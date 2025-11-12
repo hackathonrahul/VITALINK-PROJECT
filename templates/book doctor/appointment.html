@@ -3,50 +3,227 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Appointment Success</title>
+    <title>Appointments</title>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #f0f4f8;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            padding: 20px;
         }
-        .success-container {
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
             background: #fff;
+            padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(67, 128, 90, 0.08);
-            padding: 36px 32px;
-            width: 370px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .header h1 {
+            font-size: 26px;
+            color: #1c3a5a;
+        }
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
             text-align: center;
         }
-        .success-msg {
-            font-size: 19px;
-            color: #167b41;
-            margin-bottom: 14px;
+        .btn-primary {
+            background: #3096f3;
+            color: white;
         }
-        .details {
-            color: #465879;
-            font-size: 16px;
-            margin-bottom: 12px;
+        .btn-primary:hover {
+            background: #1e6fcc;
         }
-        .dashboard-link {
-            color: #3096f3;
-            text-decoration: none;
+        .btn-secondary {
+            background: #e6eef7;
+            color: #1c3a5a;
+        }
+        .btn-secondary:hover {
+            background: #d0dded;
+        }
+
+        .success-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
             font-weight: 500;
+        }
+
+        .appointments-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .appointment-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border-left: 4px solid #4CAF50;
+            transition: box-shadow 0.2s;
+        }
+        .appointment-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .appointment-card.doctor {
+            border-left-color: #FF6B6B;
+        }
+        .appointment-card.wellness {
+            border-left-color: #4CAF50;
+        }
+
+        .appt-icon {
+            font-size: 24px;
+            margin-right: 8px;
+        }
+        .appt-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1c3a5a;
+            margin-bottom: 8px;
+        }
+        .appt-detail {
+            color: #666;
+            font-size: 14px;
+            margin: 6px 0;
+            line-height: 1.5;
+        }
+        .appt-detail-label {
+            font-weight: 600;
+            color: #333;
+        }
+        .appt-date {
+            color: #0066cc;
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #eee;
+        }
+
+        .empty-message {
+            background: #fff;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 12px;
+            color: #999;
             font-size: 16px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #fff;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #3096f3;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
         }
     </style>
 </head>
 <body>
-    <div class="success-container">
-        <div class="success-msg">✅ Appointment Booked Successfully!</div>
-        <div class="details">
-            Thank you, <strong>{{ name }}</strong>!<br>
-            Your appointment for <strong>{{ date }}</strong> has been booked.<br>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📅 All Appointments</h1>
+            <div class="header-actions">
+                <a href="{{ url_for('bookdoctor') }}" class="btn btn-primary">+ Book Doctor</a>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
         </div>
-        <a class="dashboard-link" href="{{ url_for('dashboard') }}">← Back to Dashboard</a>
+
+        <!-- Success Message (if just booked) -->
+        {% if name and date %}
+            <div class="success-message">
+                ✅ Appointment booked successfully! Thank you, <strong>{{ name }}</strong>. Your appointment for <strong>{{ date }}</strong> has been confirmed.
+            </div>
+        {% endif %}
+
+        <!-- Statistics -->
+        {% if appointments and appointments|length > 0 %}
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">{{ appointments|length }}</div>
+                    <div class="stat-label">Total Appointments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ appointments|selectattr('type', 'equalto', 'doctor')|list|length }}</div>
+                    <div class="stat-label">Doctor Appointments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ appointments|selectattr('type', 'equalto', 'wellness')|list|length }}</div>
+                    <div class="stat-label">Wellness Classes</div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Appointments List -->
+        {% if appointments and appointments|length > 0 %}
+            <div class="appointments-grid">
+                {% for appointment in appointments %}
+                    <div class="appointment-card {% if appointment.type == 'doctor' %}doctor{% else %}wellness{% endif %}">
+                        <div class="appt-title">
+                            {% if appointment.type == 'doctor' %}
+                                <span class="appt-icon">👨‍⚕️</span>Doctor Appointment
+                            {% else %}
+                                <span class="appt-icon">🧘</span>{{ appointment.class_name }}
+                            {% endif %}
+                        </div>
+                        
+                        <div class="appt-detail">
+                            <span class="appt-detail-label">Name:</span> {{ appointment.name }}
+                        </div>
+                        
+                        {% if appointment.type == 'doctor' %}
+                            <div class="appt-detail">
+                                <span class="appt-detail-label">Reason:</span> {{ appointment.reason }}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="appt-date">
+                            📅 {{ appointment.date }} ({{ appointment.day }})
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-message">
+                📭 No appointments found. <a href="{{ url_for('bookdoctor') }}" style="color: #3096f3; text-decoration: none;">Book one now!</a>
+            </div>
+        {% endif %}
     </div>
 </body>
 </html>

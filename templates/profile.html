@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile - Vitalink</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #F7F8FA; margin: 0; }
+        .container { max-width: 420px; margin: 30px auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+        .user-icon { background: linear-gradient(135deg,#79D7D7,#247BC3); color:#fff; border-radius:50%; width:44px; height:44px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px }
+        .form-row { margin-bottom:10px; }
+        label { display:block; font-size:13px; color:#444; margin-bottom:6px }
+        input[type="text"], input[type="email"], input[type="tel"] { width:100%; padding:10px; border-radius:8px; border:1px solid #e1e6ee }
+        .btn { background:#3096f3; color:#fff; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; }
+        .btn-logout { background:#e74c3c; }
+        .small { font-size:13px; color:#666 }
+        .msg { background:#eef6ff; border:1px solid #d3eaff; padding:8px 10px; border-radius:8px; margin-bottom:10px; color:#124a86 }
+        .button-group { display:flex; gap:8px; align-items:center; margin-top:12px; flex-wrap: wrap; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <div style="font-size:18px; font-weight:700; color:#1C3453;">Profile</div>
+                <div class="small">Manage your account details</div>
+            </div>
+            <div class="user-icon">{{ (current_user.name[0] if current_user and current_user.name) | upper }}</div>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="msg">{{ messages[0] }}</div>
+          {% endif %}
+        {% endwith %}
+
+        {% if current_user and current_user.id == 'admin' %}
+            <div class="form-row">
+                <label>Administrator</label>
+                <div class="small">This is the admin account. Profile editing is disabled here.</div>
+            </div>
+            <div class="button-group">
+                <a href="{{ url_for('dashboard') }}" style="text-decoration:none"><div style="padding:10px 14px; border-radius:8px; border:1px solid #e6eef7; color:#1c3a5a">Back to Dashboard</div></a>
+                <a href="{{ url_for('logout') }}" style="text-decoration:none"><div class="btn btn-logout">Logout</div></a>
+            </div>
+        {% else %}
+            <form method="post" action="{{ url_for('profile') }}">
+                <div class="form-row">
+                    <label for="name">Full name</label>
+                    <input id="name" name="name" type="text" value="{{ current_user.name if current_user else '' }}" required>
+                </div>
+                <div class="form-row">
+                    <label for="email">Email</label>
+                    <input id="email" name="email" type="email" value="{{ current_user.email if current_user else '' }}">
+                </div>
+                <div class="form-row">
+                    <label for="phone">Phone number</label>
+                    <input id="phone" name="phone" type="tel" value="{{ current_user.phone if current_user else '' }}">
+                </div>
+                <div class="button-group">
+                    <button class="btn" type="submit">Save</button>
+                    <a href="{{ url_for('dashboard') }}" style="text-decoration:none"><div style="padding:10px 14px; border-radius:8px; border:1px solid #e6eef7; color:#1c3a5a">Cancel</div></a>
+                    <a href="{{ url_for('logout') }}" style="text-decoration:none"><div class="btn btn-logout">Logout</div></a>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+</body>
+</html>
